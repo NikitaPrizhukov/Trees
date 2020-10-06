@@ -1,0 +1,20 @@
+#include <iostream>
+#include "solution_tree.h"
+#include <vector>
+using namespace std;
+
+//функция проверки дерева на зеркальность
+
+inline bool solution(const Node* left, const Node* right) {
+	if (left == nullptr || right == nullptr) return left == nullptr && right == nullptr;
+	return left->value == right->value && solution(left->left, right->right) && solution(left->right, right->left);
+}
+
+bool Solution(const Node* root) {
+
+	bool flag = true;
+	
+	flag = solution(root->left, root->right);
+
+	return flag;
+}
