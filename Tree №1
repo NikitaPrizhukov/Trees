@@ -1,0 +1,22 @@
+#include <iostream>
+#include "solution_tree.h"
+using namespace std;
+
+//функция для нахождения максимальное значение в вершине
+
+int Solution(const Node* root) {
+
+	static int max = -1000;
+
+	if (root->value > max) {
+		max = root->value;
+	}
+
+	if (root->left != nullptr) {
+		max = Solution(root->left);
+	}
+	if (root->right != nullptr) {
+		max = Solution(root->right);
+	}
+	return max;
+}
