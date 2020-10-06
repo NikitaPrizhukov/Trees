@@ -1,0 +1,39 @@
+#include <iostream>
+#include "solution_tree.h"
+using namespace std;
+
+//проверка дерева на сбалансированность
+
+bool Solution(const Node* root) {
+
+	static bool flag = true;
+	static int count = -1;
+	static int count2 = 0;
+
+	if (root->left != nullptr && flag == true) {
+		count2++;
+		flag = Solution(root->left);
+		count2--;
+	}
+	else if(flag == true){
+		if (count == -1) {
+			count = count2;
+		}
+		if (count2 < count - 1 || count2 > count + 1) {
+			flag = false;
+		}
+	}
+
+	if (root->right != nullptr && flag == true) {
+		count2++;
+		flag = Solution(root->right);
+		count2--;
+	}
+	else if (flag == true) {
+		if (count2 < count - 1 || count2 > count + 1) {
+			flag = false;
+		}
+	}
+
+	return flag;
+}
