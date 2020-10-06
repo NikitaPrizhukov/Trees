@@ -1,0 +1,13 @@
+#include <iostream>
+#include "solution_tree.h"
+using namespace std;
+
+//функция для проверки схожести деревьев
+
+bool Solution(const Node* root1, const Node* root2) {
+
+	if (root1 == nullptr || root2 == nullptr) return root1 == nullptr && root2 == nullptr;
+
+	return root1->value == root2->value && Solution(root1->left, root2->left) && Solution(root1->right, root2->right);
+
+}
