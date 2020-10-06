@@ -1,0 +1,33 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+//выводит максимальное количество деревьев поиска со значениями от 1 до n
+
+void tree(int a, int open, int close, int& count) {
+	if (close + open == 2 * a) {
+		count++;
+		return;
+	}
+
+	if (open < a) {
+		tree(a, open + 1, close, count);
+	}
+	if (open > close) {
+		tree(a, open, close + 1, count);
+	}
+}
+
+int main() {
+	int nom;
+
+	cin >> nom;
+
+	int count = 0;
+
+	tree(nom, 0, 0, count);
+	cout << count;
+
+	return 0;
+}
