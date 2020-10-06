@@ -1,0 +1,269 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+using namespace std;
+
+//дерево поиска
+
+struct Mem
+{
+private:
+	string name;
+	string points;
+	int sumPoints = 0;
+	int indexIn;
+	int left = 0;
+	int right = 0;
+	int thisRoot = 0;
+
+public:
+
+	Mem(string& a, int len) {
+
+		int index = 0;
+
+		indexIn = len;
+
+		for (size_t i = 0; i < a.length(); i++) {
+			if (a[i] == ' ') {
+				index = i + 1;
+				break;
+			}
+			name.push_back(a[i]);
+		}
+
+		for (size_t i = index; i < a.length(); i++) {
+			points.push_back(a[i]);
+		}
+
+		stringstream ss;
+		ss << points;
+		int i;
+		while (ss >> i) {
+			if (i > 0) {
+				sumPoints += i;
+			}
+		}
+
+		left = 2 * len - 1;
+		right = 2 * len;
+
+		if (len / 2 > 1) {
+			thisRoot = (len / 2);
+			thisRoot--;
+		}
+	}
+
+	int getRoot() {
+		return thisRoot;
+	}
+
+	int getLeft() {
+		return left;
+	}
+
+	int getRight() {
+		return right;
+	}
+
+	bool leftFree() {
+		if (left == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	bool rightFree() {
+		if (right == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	void push(string a, int len) {
+		Mem* m = new Mem(a, len);
+	}
+
+	int sum() {
+		return sumPoints;
+	}
+
+	string nameBack() {
+		return name;
+	}
+
+	string print() {
+		return name + ' ' + points;
+	}
+
+	int in() {
+		return indexIn;
+	}
+
+	void swich(Mem* high, Mem* low) {
+		int f = high->sumPoints;
+		string a = high->name;
+		string v = high->points;
+		int index = high->indexIn;
+		high->sumPoints = low->sumPoints;
+		high->name = low->name;
+		high->points = low->points;
+		high->indexIn = low->indexIn;
+		low->sumPoints = f;
+		low->name = a;
+		low->points = v;
+		low->indexIn = index;
+	}
+};
+
+class Members {
+
+	vector<Mem*> root;
+
+public:
+
+	bool kondratiy(Mem* kon) {
+		string count = "kondratiy";
+
+		if (9 > kon->nameBack().length()) {
+			return false;
+		}
+
+		for (int i = 0; i < 9; i++) {
+			int h = 0;
+			for (size_t f = 0; f < kon->nameBack().length(); f++) {
+				if (count[i] == kon->nameBack()[f]) {
+					h = 1;
+					break;
+				}
+			}
+
+			if (h == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	bool comparison(Mem* one, Mem* last) {
+
+		if (kondratiy(last)) {
+			return true;
+		}
+		else if (kondratiy(one)) {
+			return false;
+		}
+
+
+		if (last->sum() > one->sum()) {
+			return true;
+		}
+		else if (last->sum() == one->sum()) {
+			if (last->nameBack() < one->nameBack()) {
+				return true;
+			}
+			else if (last->nameBack() == one->nameBack()) {
+				if (last->in() > one->in()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	void push(string a) {
+
+		if (root.size() == 0) {
+			Mem* r = new Mem(a, 1);
+			root.push_back(r);
+			return;
+		}
+
+		Mem* last = new Mem(a, root.size() + 1);
+		root.push_back(last);
+
+		int index = root.size() - 1;
+
+		while (1) {
+
+			if (comparison(root[root[index]->getRoot()], root[index])) {
+				root[index]->swich(root[index], root[root[index]->getRoot()]);
+
+				index = root[index]->getRoot();
+
+				if (index == 0) {
+					break;
+				}
+
+			}
+			else {
+				break;
+			}
+		}
+	}
+
+	string get() {
+
+		string a = root[0]->print();
+
+		root[0]->swich(root[0], root[root.size() - 1]);
+
+		root.pop_back();
+
+		int index = 0;
+
+		if (root.size() != 0) {
+			while (1) {
+
+				if (root[index]->getRight() <= root.size() - 1 && comparison(root[root[index]->getLeft()], root[root[index]->getRight()]) == true) {
+					if (comparison(root[index], root[root[index]->getRight()])) {
+						root[index]->swich(root[index], root[root[index]->getRight()]);
+						index = root[index]->getRight();
+					}
+					else {
+						break;
+					}
+				}
+				else if (root[index]->getLeft() <= root.size() - 1) {
+					if (comparison(root[index], root[root[index]->getLeft()])) {
+						root[index]->swich(root[index], root[root[index]->getLeft()]);
+						index = root[index]->getLeft();
+					}
+					else {
+						break;
+					}
+				}
+				else {
+					break;
+				}
+			}
+		}
+		return a;
+
+	}
+};
+
+
+int main() {
+
+	string text;
+	int count = 0;
+	getline(cin, text);
+	count = stoi(text);
+
+	Members* tresh = new Members;
+
+	for (int i = 0; i < count; i++) {
+		getline(cin, text);
+		tresh->push(text);
+	}
+
+	for (int i = 0; i < count; i++) {
+		cout << tresh->get() << endl;
+	}
+
+	delete tresh;
+
+	return 0;
+}
