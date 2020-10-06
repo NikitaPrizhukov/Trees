@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include "solution_tree.h"
+using namespace std;
+
+//функция для вывода значений по ширине
+
+vector<vector<int>> Solution(const Node* root) {
+
+	static vector<vector<int>> familyTree;
+	static int count = 0;
+
+	if (root == nullptr) { return familyTree; }
+
+	if (familyTree.size() == count) {
+		familyTree.push_back(vector<int>());
+	}
+
+	familyTree[count].push_back(root->value);
+
+	if (root->left != nullptr) {
+		count++;
+		Solution(root->left);
+		count--;
+	}
+	if (root->right != nullptr) {
+		count++;
+		Solution(root->right);
+		count--;
+	}
+
+	return familyTree;
+}
