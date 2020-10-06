@@ -1,0 +1,45 @@
+#include <iostream>
+#include <algorithm>
+#include "solution_tree.h"
+using namespace std;
+
+//функция вывода масимального значения из одной вершины, в другую
+
+inline int solution(const Node* root, int& maxNum) {
+
+    if (root == nullptr) {
+        return 0;
+    }
+
+    if (root->left == nullptr && root->right == nullptr) {
+        return root->value;
+    }
+
+    int left = solution(root->left, maxNum);
+    int right = solution(root->right, maxNum);
+
+    if (left + root->value >= right + root->value) {
+        int maxNode = max(left + root->value, root->value);
+        maxNum = max(max(maxNum, left + right + root->value), max(left, right));
+        return maxNode;
+    }
+    else {
+        int maxNode = max(right + root->value, root->value);
+        maxNum = max(max(maxNum, left + right + root->value), max(left, right));
+        return maxNode;
+    }
+}
+
+int Solution(const Node* root) {
+
+    int maxNum = -200000;
+
+    int max = solution(root, maxNum);
+
+    if (max > maxNum) {
+        return max;
+    }
+    else {
+        return maxNum;
+    }
+}
